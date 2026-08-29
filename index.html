@@ -159,6 +159,16 @@ footer p{max-width:850px;margin-bottom:8px}
   </div>
 </section>
 
+<section id="profitSec" hidden>
+  <div class="sechead"><h2>Profit lens <span class="chip" style="margin-left:6px">Estimated</span></h2><span class="sub" id="profitSub"></span></div>
+  <div class="cards" id="profitCards"></div>
+  <div class="panel" style="margin-top:14px">
+    <div class="eyebrow" style="margin-bottom:4px">Contribution after ad spend, daily</div>
+    <svg class="chart" id="contribChart" viewBox="0 0 900 260" role="img" aria-label="Daily contribution after ad spend, this season versus last"></svg>
+    <div class="note-inline">Estimated gross profit (net sales × blended margin) minus that day's Google + Meta spend. Same margin applied to both years. Excludes shipping costs, transaction fees and overheads.</div>
+  </div>
+</section>
+
 <section>
   <div class="sechead">
     <h2>Daily trading</h2>
@@ -193,7 +203,8 @@ footer p{max-width:850px;margin-bottom:8px}
 <footer>
   <p><b>Definitions.</b> Revenue, orders, sessions, conversion rate and AOV come from Shopify and are the source of truth. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to actual revenue. MER (marketing efficiency ratio) is Shopify revenue divided by total ad spend across both platforms.</p>
   <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
-  <p id="footBackfill"></p>
+  <p><b>Net sales & profit.</b> Net sales is Shopify revenue after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
+<p id="footBackfill"></p>
   <p id="footMeta"></p>
 </footer>
 
@@ -260,8 +271,10 @@ if(pre){
   const totSess=LY.reduce((s,d)=>s+d.sess,0);
   const peak=LY.reduce((a,b)=>b.rev>a.rev?b:a);
   const gSp=LY.reduce((s,d)=>s+d.g.sp,0);
+  const totNet=LY.reduce((s,d)=>s+(d.net||0),0);
   pc.append(
     card('Season revenue',fmt$(totRev)),
+    card('Net sales',fmt$(totNet),null,'after discounts & returns'),
     card('Orders',fmtN(totOrd)),
     card('Sessions',fmtN(totSess)),
     card('Blended CVR',fmtP(totOrd/totSess)),
@@ -276,6 +289,7 @@ if(pre){
   const sp = (t.g?t.g.sp:0)+(t.m?t.m.sp:0), lsp = lySpendKnown(l)?lySpend(l):null;
   pc.append(
     card('Revenue',fmt$(t.rev),(t.rev-l.rev)/l.rev,'LY '+fmt$(l.rev)),
+    card('Net sales',fmt$(t.net),(l.net?(t.net-l.net)/l.net:null),'LY '+fmt$(l.net)),
     card('Orders',fmtN(t.ord),(t.ord-l.ord)/l.ord,'LY '+fmtN(l.ord)),
     card('Sessions',fmtN(t.sess),(t.sess-l.sess)/l.sess,'LY '+fmtN(l.sess)),
     card('Conv. rate',fmtP(t.cvr),(t.cvr-l.cvr)/l.cvr,'LY '+fmtP(l.cvr)),
@@ -363,6 +377,39 @@ $('dailyTabs').addEventListener('click',e=>{
   [...$('dailyTabs').children].forEach(x=>x.setAttribute('aria-selected',x===b));
   renderDaily(b.dataset.m);
 });
+
+// ---- profit lens (renders only when margin configured) ----
+if (C.marginPct){
+  $('profitSec').hidden = false;
+  const mg = C.marginPct/100;
+  const contrib = d => { const gp=(d.net!=null?d.net:d.rev)*mg;
+    const sp=(d.g?d.g.sp:0)+(d.m?d.m.sp:0); return (d.m||d===undefined)? gp-sp : null; };
+  const lyContrib = LY.map(d=> d.m ? contrib(d) : null); // only where full spend known
+  const tyContrib = LY.map((_,i)=> i<TY.length ? contrib(TY[i]) : null);
+  $('profitSub').textContent='Blended gross margin '+C.marginPct+'% (client-confirmed) · both years';
+  const pcards=$('profitCards');
+  if(pre){
+    const win=LY.filter(d=>d.m);
+    const gp=win.reduce((s,d)=>s+d.net*mg,0), sp=win.reduce((s,d)=>s+lySpend(d),0);
+    pcards.append(
+      card('Est. gross profit (20–31 Oct LY)',fmt$(gp)),
+      card('Ad spend, same window',fmt$(sp)),
+      card('Contribution after ads',fmt$(gp-sp))
+    );
+  } else {
+    const t=TY[TY.length-1], l=LY[TY.length-1];
+    const tGp=t.net*mg, tSp=(t.g?t.g.sp:0)+(t.m?t.m.sp:0);
+    pcards.append(
+      card('Est. gross profit',fmt$(tGp)),
+      card('Ad spend',fmt$(tSp)),
+      card('Contribution after ads',fmt$(tGp-tSp), null, l.m?('LY '+fmt$(l.net*mg-lySpend(l))):'')
+    );
+  }
+  drawLines($('contribChart'),[
+    {vals:lyContrib,color:'var(--ly)',dash:'4 5',width:1.8},
+    {vals:tyContrib,color:'var(--ty)',width:2.6}
+  ],{money:true});
+}
 
 // ---- channels ----
 function chCard(name,rows,footer){
