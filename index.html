@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Season Pulse · Halloween 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink0:#0b0a12; --ink1:#14121f; --ink2:#1d1a2c; --line:#2a2740;
+  --text:#ede9f6; --muted:#948daa; --faint:#655f7d;
+  --ty:#ffaa33; --ty-dim:rgba(255,170,51,.16);
+  --ly:#7e6ff3; --ly-dim:rgba(126,111,243,.14);
+  --good:#4ade9c; --bad:#ff6b7a;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --disp:'Unbounded',var(--sans);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{color-scheme:dark}
+body{background:var(--ink0);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;
+  background-image:radial-gradient(1200px 600px at 80% -10%,rgba(126,111,243,.08),transparent 60%),
+                   radial-gradient(900px 500px at -10% 10%,rgba(255,170,51,.05),transparent 55%);}
+a{color:var(--ty)}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 70px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+header.top{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;margin-bottom:34px}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(22px,4vw,34px);letter-spacing:.01em;margin-top:6px}
+.updated{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right}
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);margin-top:6px}
+.chip.pre{border-color:rgba(255,170,51,.45);color:var(--ty)}
+.chip.pending{border-color:rgba(255,170,51,.45);color:var(--ty)}
+
+.dialrow{display:flex;flex-wrap:wrap;gap:26px;align-items:center;background:var(--ink1);border:1px solid var(--line);border-radius:18px;padding:26px;margin-bottom:26px}
+.dial{flex:0 0 170px;position:relative;width:170px;height:170px}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .centre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.dial .num{font-family:var(--disp);font-weight:700;font-size:44px;line-height:1;color:var(--ty);text-shadow:0 0 24px rgba(255,170,51,.35)}
+.dial .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.dialinfo{flex:1;min-width:240px}
+.dialinfo h2{font-size:17px;font-weight:600;margin-bottom:6px}
+.dialinfo p{color:var(--muted);font-size:14px;max-width:560px}
+.keyline{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:12px}
+.keyline span{display:inline-flex;align-items:center;gap:7px;color:var(--muted)}
+.swatch{width:16px;height:3px;border-radius:2px;display:inline-block}
+.swatch.ty{background:var(--ty)}
+.swatch.ly{background:var(--ly);opacity:.85}
+
+section{margin-bottom:30px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.sechead h2{font-size:16px;font-weight:600}
+.sechead .sub{font-family:var(--mono);font-size:11px;color:var(--faint)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{background:var(--ink1);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.card .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-family:var(--mono);font-size:22px;font-weight:500;margin-top:6px}
+.card .d{font-family:var(--mono);font-size:12px;margin-top:4px}
+.card .d.up{color:var(--good)} .card .d.down{color:var(--bad)} .card .d.flat{color:var(--muted)}
+.card .ghost{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:3px}
+
+.panel{background:var(--ink1);border:1px solid var(--line);border-radius:16px;padding:20px}
+.panel + .panel{margin-top:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{font-family:var(--mono);font-size:12px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink0);background:var(--ty);border-color:var(--ty);font-weight:500}
+.tabs button:focus-visible{outline:2px solid var(--ty);outline-offset:2px}
+.chart{width:100%;height:auto;display:block;margin-top:14px}
+.axis{font-family:var(--mono);font-size:10px;fill:var(--faint)}
+.note-inline{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:10px}
+
+.channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.ch .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ch .h b{font-size:15px}
+.ch table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px}
+.ch td{padding:5px 0;border-bottom:1px dashed var(--line)}
+.ch td:last-child{text-align:right}
+.ch tr:last-child td{border-bottom:none}
+.covbar{height:8px;border-radius:99px;background:var(--ink2);overflow:hidden;margin-top:8px}
+.covbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ly),var(--ty))}
+
+.note{border-left:3px solid var(--ty);padding:14px 16px;background:var(--ink1);border-radius:0 14px 14px 0;margin-bottom:12px}
+.note .nh{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.note .nd{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.note b{font-size:15px}
+.note p{color:var(--muted);font-size:14px;margin-top:4px}
+.note ul{margin:8px 0 0 18px;color:var(--text);font-size:14px}
+.note .wl{color:var(--muted)}
+.note .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:10px}
+
+footer{border-top:1px solid var(--line);margin-top:44px;padding-top:18px;color:var(--faint);font-size:12.5px}
+footer p{max-width:850px;margin-bottom:8px}
+@media (prefers-reduced-motion:no-preference){
+  .dial .num{transition:text-shadow .6s ease}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="eyebrow">Halloween Season 2026 · Daily Trading Tracker</div>
+    <h1 id="brandTitle">MesmerEyez</h1>
+    <span class="chip" id="stateChip"></span>
+  </div>
+  <div class="updated">
+    <div>Last updated</div>
+    <div id="updatedAt" style="color:var(--text)"></div>
+    <div id="tzNote"></div>
+  </div>
+</header>
+
+<div class="dialrow">
+  <div class="dial" aria-label="Days until Halloween">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ink2)" stroke-width="10"/>
+      <circle cx="60" cy="60" r="44" fill="none" stroke="var(--line)" stroke-width="1"/>
+      <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke="url(#irisGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+      <defs>
+        <linearGradient id="irisGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffcf70"/><stop offset="100%" stop-color="#ff8a1e"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="centre">
+      <div class="num" id="dtoh">–</div>
+      <div class="lbl">days to<br>Halloween</div>
+    </div>
+  </div>
+  <div class="dialinfo">
+    <h2 id="dialHead"></h2>
+    <p id="dialSub"></p>
+    <div class="keyline">
+      <span><i class="swatch ty"></i>2026 season</span>
+      <span><i class="swatch ly"></i>2025, aligned to days-before-Halloween</span>
+    </div>
+  </div>
+</div>
+
+<section id="pulseSec">
+  <div class="sechead"><h2 id="pulseTitle"></h2><span class="sub" id="pulseSub"></span></div>
+  <div class="cards" id="pulseCards"></div>
+</section>
+
+<section>
+  <div class="sechead"><h2>Season pacing</h2><span class="sub">Cumulative, day-aligned to Halloween</span></div>
+  <div class="panel">
+    <div class="eyebrow" style="margin-bottom:4px">Cumulative revenue (Shopify)</div>
+    <svg class="chart" id="paceRev" viewBox="0 0 900 260" role="img" aria-label="Cumulative revenue, this season versus last"></svg>
+  </div>
+  <div class="panel">
+    <div class="eyebrow" style="margin-bottom:4px">Cumulative ad spend (Google + Meta)</div>
+    <svg class="chart" id="paceSpend" viewBox="0 0 900 260" role="img" aria-label="Cumulative ad spend, this season versus last"></svg>
+    <div class="note-inline" id="spendNote"></div>
+  </div>
+</section>
+
+<section>
+  <div class="sechead">
+    <h2>Daily trading</h2>
+    <div class="tabs" role="tablist" id="dailyTabs">
+      <button role="tab" aria-selected="true" data-m="rev">Revenue</button>
+      <button role="tab" aria-selected="false" data-m="sess">Sessions</button>
+      <button role="tab" aria-selected="false" data-m="cvr">Conv. rate</button>
+      <button role="tab" aria-selected="false" data-m="aov">AOV</button>
+    </div>
+  </div>
+  <div class="panel">
+    <svg class="chart" id="dailyChart" viewBox="0 0 900 280" role="img" aria-label="Daily metric, this season versus last"></svg>
+    <div class="note-inline">Violet = 2025 same day-to-Halloween. Weekdays shift one day between years; the demand curve is event-anchored, so day-to-event alignment is the primary read.</div>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><h2>Channels</h2><span class="sub" id="chSub"></span></div>
+  <div class="channels" id="chCards"></div>
+  <div class="panel" style="margin-top:14px">
+    <div class="eyebrow">Attribution coverage</div>
+    <p style="color:var(--muted);font-size:14px;margin-top:6px" id="covText"></p>
+    <div class="covbar"><i id="covFill" style="width:0%"></i></div>
+  </div>
+</section>
+
+<section>
+  <div class="sechead"><h2>Daily notes</h2><span class="sub">Written each morning with the data refresh</span></div>
+  <div id="notes"></div>
+</section>
+
+<footer>
+  <p><b>Definitions.</b> Revenue, orders, sessions, conversion rate and AOV come from Shopify and are the source of truth. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to actual revenue. MER (marketing efficiency ratio) is Shopify revenue divided by total ad spend across both platforms.</p>
+  <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
+  <p id="footBackfill"></p>
+  <p id="footMeta"></p>
+</footer>
+
+</div>
+<script src="data.js"></script>
+<script>
+(function(){
+const D = window.DASH, C = D.config;
+const $ = id => document.getElementById(id);
+const fmt$ = n => n==null?'–':'$'+Math.round(n).toLocaleString();
+const fmt$2 = n => n==null?'–':'$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN = n => n==null?'–':Math.round(n).toLocaleString();
+const fmtP = n => n==null?'–':(n*100).toFixed(1)+'%';
+const fmtX = n => n==null?'–':n.toFixed(2)+'x';
+
+// ---- header / state ----
+$('brandTitle').textContent = C.brand;
+$('updatedAt').textContent = new Date(D.generatedAt).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+$('tzNote').textContent = 'All days in store time (' + C.tz.split(' ')[0].replace('Australia/','') + ')';
+
+const today = new Date(); today.setHours(0,0,0,0);
+const hallo = new Date(C.halloween+'T00:00:00');
+const start = new Date(C.seasonStart+'T00:00:00');
+const msDay = 86400000;
+const dToH = Math.max(0, Math.round((hallo - today)/msDay));
+const seasonLen = Math.round((hallo - start)/msDay) + 1; // 61
+const elapsed = Math.min(seasonLen, Math.max(0, Math.round((today - start)/msDay)));
+$('dtoh').textContent = dToH;
+const ringLen = 326.7;
+$('ring').style.strokeDashoffset = String(ringLen * (1 - elapsed/seasonLen));
+
+const pre = D.ty.length === 0;
+$('stateChip').textContent = pre ? 'Pre-season · first trading update 2 Sep' : 'Live · updated daily';
+if (pre) $('stateChip').classList.add('pre');
+$('dialHead').textContent = pre ? 'The 2025 baseline is loaded. Live tracking starts 1 September.'
+  : 'Season live · day ' + elapsed + ' of ' + seasonLen;
+$('dialSub').textContent = pre
+  ? 'Every chart below shows last season day-by-day, aligned to days-before-Halloween. From 2 September, each morning adds yesterday\u2019s trading beside the same point last year.'
+  : 'Each morning adds yesterday\u2019s trading beside the same day-to-Halloween last season.';
+
+// ---- helpers over LY/TY ----
+const LY = D.ly, TY = D.ty;
+const lySpend = d => (d.g?d.g.sp:0) + (d.m?d.m.sp:0);
+const lySpendKnown = d => !!d.m; // full spend only where Meta known
+const cum = arr => { let s=0; return arr.map(v => (v==null? null : (s+=v))); };
+
+// ---- pulse ----
+function card(k,v,dl,ghost){
+  const div=document.createElement('div');div.className='card';
+  let dHtml='';
+  if(dl!=null && isFinite(dl)){
+    const cls = dl>0.001?'up':(dl<-0.001?'down':'flat');
+    const sign = dl>0?'+':'';
+    dHtml = '<div class="d '+cls+'">'+sign+(dl*100).toFixed(1)+'% vs LY</div>';
+  }
+  div.innerHTML='<div class="k">'+k+'</div><div class="v">'+v+'</div>'+dHtml+(ghost?'<div class="ghost">'+ghost+'</div>':'');
+  return div;
+}
+const pc=$('pulseCards');
+if(pre){
+  $('pulseTitle').textContent='Last season at a glance';
+  $('pulseSub').textContent='1 Sep – 31 Oct 2025 · the baseline this season is measured against';
+  const totRev=LY.reduce((s,d)=>s+d.rev,0), totOrd=LY.reduce((s,d)=>s+d.ord,0);
+  const totSess=LY.reduce((s,d)=>s+d.sess,0);
+  const peak=LY.reduce((a,b)=>b.rev>a.rev?b:a);
+  const gSp=LY.reduce((s,d)=>s+d.g.sp,0);
+  pc.append(
+    card('Season revenue',fmt$(totRev)),
+    card('Orders',fmtN(totOrd)),
+    card('Sessions',fmtN(totSess)),
+    card('Blended CVR',fmtP(totOrd/totSess)),
+    card('AOV',fmt$2(totRev/totOrd)),
+    card('Google spend',fmt$(gSp),null,'Meta history backfilling'),
+    card('Peak day',fmt$(peak.rev),null,new Date(peak.d).toLocaleDateString('en-AU',{day:'numeric',month:'short'}))
+  );
+}else{
+  const t=TY[TY.length-1], l=LY[TY.length-1];
+  $('pulseTitle').textContent='Yesterday · '+new Date(t.d).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+  $('pulseSub').textContent='vs '+new Date(l.d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+' (same day-to-Halloween)';
+  const sp = (t.g?t.g.sp:0)+(t.m?t.m.sp:0), lsp = lySpendKnown(l)?lySpend(l):null;
+  pc.append(
+    card('Revenue',fmt$(t.rev),(t.rev-l.rev)/l.rev,'LY '+fmt$(l.rev)),
+    card('Orders',fmtN(t.ord),(t.ord-l.ord)/l.ord,'LY '+fmtN(l.ord)),
+    card('Sessions',fmtN(t.sess),(t.sess-l.sess)/l.sess,'LY '+fmtN(l.sess)),
+    card('Conv. rate',fmtP(t.cvr),(t.cvr-l.cvr)/l.cvr,'LY '+fmtP(l.cvr)),
+    card('AOV',fmt$2(t.aov),(t.aov-l.aov)/l.aov,'LY '+fmt$2(l.aov)),
+    card('Ad spend',fmt$(sp),lsp?(sp-lsp)/lsp:null,lsp?'LY '+fmt$(lsp):'LY Meta pending'),
+    card('MER',sp?fmtX(t.rev/sp):'–',null,lsp?'LY '+fmtX(l.rev/lsp):'')
+  );
+}
+
+// ---- SVG chart helpers ----
+const NS='http://www.w3.org/2000/svg';
+function el(n,at){const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;}
+function drawLines(svg, series, opts){
+  // series: [{vals:[...], color, dash, width, area}]
+  svg.innerHTML='';
+  const W=900,H=+svg.viewBox.baseVal.height,P={l:56,r:14,t:14,b:30};
+  const n = Math.max(...series.map(s=>s.vals.length));
+  let max = 0;
+  series.forEach(s=>s.vals.forEach(v=>{if(v!=null&&v>max)max=v;}));
+  if(opts&&opts.max) max=Math.max(max,opts.max);
+  if(max===0)max=1;
+  max*=1.06;
+  const x=i=>P.l+(W-P.l-P.r)*(n<=1?0:i/(n-1));
+  const y=v=>H-P.b-(H-P.t-P.b)*(v/max);
+  // gridlines
+  for(let g=0;g<=3;g++){
+    const gy=P.t+(H-P.t-P.b)*g/3, gv=max*(1-g/3);
+    svg.append(el('line',{x1:P.l,x2:W-P.r,y1:gy,y2:gy,stroke:'var(--line)','stroke-width':g===3?1:.5}));
+    const t=el('text',{x:P.l-8,y:gy+3,'text-anchor':'end',class:'axis'});
+    t.textContent = opts&&opts.pct ? (gv*100).toFixed(0)+'%' : (gv>=1000?'$'+(gv/1000).toFixed(0)+'k':(opts&&opts.money?'$':'')+Math.round(gv));
+    if(opts&&opts.plain&&!(opts.money)) t.textContent=(gv>=1000?(gv/1000).toFixed(1)+'k':Math.round(gv));
+    svg.append(t);
+  }
+  // x labels: season landmarks
+  const marks=[[0,'1 Sep'],[30,'1 Oct'],[n-1,'31 Oct']];
+  marks.forEach(([i,l])=>{ if(i<n){const t=el('text',{x:x(i),y:H-8,'text-anchor':'middle',class:'axis'});t.textContent=l;svg.append(t);}});
+  series.forEach(s=>{
+    let dLine='',started=false, firstX=null,lastX=null;
+    s.vals.forEach((v,i)=>{ if(v==null){return;} const px=x(i),py=y(v);
+      if(!started){dLine='M'+px+' '+py;started=true;firstX=px;}else{dLine+=' L'+px+' '+py;} lastX=px;});
+    if(!started)return;
+    if(s.area){
+      const a=dLine+' L'+lastX+' '+(H-P.b)+' L'+firstX+' '+(H-P.b)+' Z';
+      svg.append(el('path',{d:a,fill:s.area,stroke:'none'}));
+    }
+    svg.append(el('path',{d:dLine,fill:'none',stroke:s.color,'stroke-width':s.width||2,'stroke-dasharray':s.dash||'', 'stroke-linejoin':'round','stroke-linecap':'round'}));
+  });
+}
+
+// ---- pacing charts ----
+const lyCumRev = cum(LY.map(d=>d.rev));
+const tyCumRev = cum(LY.map((_,i)=> i<TY.length ? TY[i].rev : null));
+drawLines($('paceRev'),[
+  {vals:lyCumRev,color:'var(--ly)',dash:'5 5',width:2,area:'var(--ly-dim)'},
+  {vals:tyCumRev,color:'var(--ty)',width:3,area:'var(--ty-dim)'}
+],{money:true});
+
+const lyCumSpend = cum(LY.map(d=> lySpend(d)));
+const tyCumSpend = cum(LY.map((_,i)=> i<TY.length ? (TY[i].g?TY[i].g.sp:0)+(TY[i].m?TY[i].m.sp:0) : null));
+drawLines($('paceSpend'),[
+  {vals:lyCumSpend,color:'var(--ly)',dash:'5 5',width:2},
+  {vals:tyCumSpend,color:'var(--ty)',width:3}
+],{money:true});
+$('spendNote').textContent = C.budgetTotal
+  ? 'Budget line: $'+C.budgetTotal.toLocaleString()
+  : 'LY line is Google only before '+new Date(C.lyMetaBackfillFrom).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' until the Meta history backfill completes on the first automated refresh. '+C.budgetNote+'.';
+
+// ---- daily chart ----
+const metrics={
+  rev:{get:d=>d.rev,opts:{money:true}},
+  sess:{get:d=>d.sess,opts:{plain:true}},
+  cvr:{get:d=>d.cvr,opts:{pct:true}},
+  aov:{get:d=>d.aov,opts:{money:true}}
+};
+function renderDaily(m){
+  const g=metrics[m];
+  drawLines($('dailyChart'),[
+    {vals:LY.map(g.get),color:'var(--ly)',dash:'4 5',width:1.8,area:'var(--ly-dim)'},
+    {vals:LY.map((_,i)=> i<TY.length ? g.get(TY[i]) : null),color:'var(--ty)',width:2.6}
+  ],g.opts);
+}
+renderDaily('rev');
+$('dailyTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  [...$('dailyTabs').children].forEach(x=>x.setAttribute('aria-selected',x===b));
+  renderDaily(b.dataset.m);
+});
+
+// ---- channels ----
+function chCard(name,rows,footer){
+  const div=document.createElement('div');div.className='panel ch';
+  div.innerHTML='<div class="h"><b>'+name+'</b></div>';
+  const t=document.createElement('table');
+  rows.forEach(([k,v])=>{const tr=document.createElement('tr');tr.innerHTML='<td style="color:var(--muted)">'+k+'</td><td>'+v+'</td>';t.append(tr);});
+  div.append(t);
+  if(footer){const p=document.createElement('div');p.className='note-inline';p.textContent=footer;div.append(p);}
+  return div;
+}
+const cc=$('chCards');
+if(pre){
+  $('chSub').textContent='2025 season, platform-reported';
+  const g={sp:0,rev:0,clk:0,conv:0}; LY.forEach(d=>{g.sp+=d.g.sp;g.rev+=d.g.rev;g.clk+=d.g.clk;g.conv+=d.g.conv;});
+  const m={sp:0,rev:0,clk:0,p:0}; LY.forEach(d=>{if(d.m){m.sp+=d.m.sp;m.rev+=d.m.rev;m.clk+=d.m.clk;m.p+=d.m.purch;}});
+  cc.append(
+    chCard('Google Ads',[
+      ['Spend',fmt$(g.sp)],['Attributed revenue',fmt$(g.rev)],['ROAS',fmtX(g.rev/g.sp)],
+      ['Clicks',fmtN(g.clk)],['Click → conv.',fmtP(g.conv/g.clk)]
+    ]),
+    chCard('Meta',[
+      ['Spend (20–31 Oct)',fmt$(m.sp)],['Attributed revenue',fmt$(m.rev)],['ROAS',fmtX(m.rev/m.sp)],
+      ['Clicks',fmtN(m.clk)],['Click → purchase',fmtP(m.p/m.clk)]
+    ],'Sep 1 – Oct 19 history backfills on the first automated refresh.')
+  );
+  // attribution coverage over the fully-known window (20-31 Oct)
+  const win=LY.filter(d=>d.m);
+  const shop=win.reduce((s,d)=>s+d.rev,0), plat=win.reduce((s,d)=>s+d.g.rev+d.m.rev,0);
+  const pct=Math.min(100,plat/shop*100);
+  $('covText').textContent='Across 20–31 Oct 2025 (the window where both platforms are loaded), Google and Meta jointly claimed '+fmt$(plat)+' of '+fmt$(shop)+' actual Shopify revenue: '+pct.toFixed(0)+'% coverage. Watching this daily shows when either platform\u2019s attribution drifts from reality.';
+  $('covFill').style.width=pct.toFixed(0)+'%';
+}else{
+  $('chSub').textContent='Season to date, platform-reported';
+  // populated by the daily refresh with TY aggregates
+}
+
+// ---- notes ----
+const nWrap=$('notes');
+D.notes.slice().reverse().forEach(n=>{
+  const div=document.createElement('div');div.className='note';
+  const pend = n.status==='pending' ? '<span class="chip pending">Pending review</span>' : '';
+  let html='<div class="nh"><span class="nd">'+new Date(n.date).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})+'</span>'+pend+'</div>';
+  html+='<b>'+n.headline+'</b>';
+  if(n.driver)html+='<p>'+n.driver+'</p>';
+  if(n.actions&&n.actions.length){html+='<div class="tag">Adjustments</div><ul>'+n.actions.map(a=>'<li>'+a+'</li>').join('')+'</ul>';}
+  if(n.watch&&n.watch.length){html+='<div class="tag">Watching</div><ul class="wl">'+n.watch.map(a=>'<li>'+a+'</li>').join('')+'</ul>';}
+  div.innerHTML=html;nWrap.append(div);
+});
+
+// ---- footer dynamic ----
+$('footBackfill').innerHTML='<b>Data status.</b> 2025 baseline loaded: Shopify and Google Ads complete for all 61 days; Meta loaded from 20 Oct 2025, remainder backfills automatically.';
+$('footMeta').innerHTML='<b>Season window.</b> '+new Date(C.seasonStart).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' – '+new Date(C.seasonEnd).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+', compared day-for-day against the same days-before-Halloween in 2025. Currency '+C.currency+'.';
+})();
+</script>
+</body>
+</html>
