@@ -450,7 +450,27 @@ if(pre){
   $('covFill').style.width=pct.toFixed(0)+'%';
 }else{
   $('chSub').textContent='Season to date, platform-reported';
-  // populated by the daily refresh with TY aggregates
+  const g={sp:0,rev:0,clk:0,conv:0}; TY.forEach(d=>{if(d.g){g.sp+=d.g.sp;g.rev+=d.g.rev;g.clk+=d.g.clk;g.conv+=d.g.conv;}});
+  const m={sp:0,rev:0,clk:0,p:0}; TY.forEach(d=>{if(d.m){m.sp+=d.m.sp;m.rev+=d.m.rev;m.clk+=d.m.clk;m.p+=d.m.purch;}});
+  cc.append(
+    chCard('Google Ads',[
+      ['Spend',fmt$(g.sp)],['Attributed revenue',fmt$(g.rev)],['ROAS',g.sp?fmtX(g.rev/g.sp):'–'],
+      ['Clicks',fmtN(g.clk)],['Click → conv.',g.clk?fmtP(g.conv/g.clk):'–']
+    ]),
+    chCard('Meta',[
+      ['Spend',fmt$(m.sp)],['Attributed revenue',fmt$(m.rev)],['ROAS',m.sp?fmtX(m.rev/m.sp):'–'],
+      ['Clicks',fmtN(m.clk)],['Click → purchase',m.clk?fmtP(m.p/m.clk):'–']
+    ])
+  );
+  // attribution coverage over season to date (most recent 2–3 days are soft, see footer note)
+  const shop=TY.reduce((s,d)=>s+d.rev,0);
+  const plat=TY.reduce((s,d)=>s+(d.g?d.g.rev:0)+(d.m?d.m.rev:0),0);
+  const pct=shop?Math.min(100,plat/shop*100):0;
+  const rangeLbl = TY.length>1
+    ? new Date(TY[0].d).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' – '+new Date(TY[TY.length-1].d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})
+    : new Date(TY[0].d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  $('covText').textContent='Across '+rangeLbl+' (season to date), Google and Meta jointly claimed '+fmt$(plat)+' of '+fmt$(shop)+' actual Shopify revenue: '+pct.toFixed(0)+'% coverage. Watching this daily shows when either platform’s attribution drifts from reality.';
+  $('covFill').style.width=pct.toFixed(0)+'%';
 }
 
 // ---- notes ----
