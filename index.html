@@ -157,6 +157,8 @@ footer p{max-width:850px;margin-bottom:8px}
     <svg class="chart" id="paceSpend" viewBox="0 0 900 260" role="img" aria-label="Cumulative ad spend, this season versus last"></svg>
     <div class="note-inline" id="spendNote"></div>
   </div>
+  <div class="sechead" style="margin-top:18px"><h2>Cumulative to date</h2><span class="sub" id="cumSub"></span></div>
+  <div class="cards" id="cumCards"></div>
 </section>
 
 <section id="profitSec" hidden>
@@ -362,6 +364,32 @@ $('spendNote').textContent = C.budgetTotal
   : backfillDone
     ? 'Full 2025 history loaded for both channels. '+C.budgetNote+'.'
     : 'LY line is Google only before '+new Date(C.lyMetaBackfillFrom).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' until the Meta history backfill completes on the first automated refresh. '+C.budgetNote+'.';
+
+// ---- cumulative-to-date cards (this year's running total vs LY over the same number of days) ----
+if(!pre){
+  const N = TY.length;
+  const LYw = LY.slice(0,N);
+  const sum = (arr,f) => arr.reduce((s,d)=>s+f(d),0);
+  const revT=sum(TY,d=>d.rev), revL=sum(LYw,d=>d.rev);
+  const netT=sum(TY,d=>d.net), netL=sum(LYw,d=>d.net||0);
+  const ordT=sum(TY,d=>d.ord), ordL=sum(LYw,d=>d.ord);
+  const sessT=sum(TY,d=>d.sess), sessL=sum(LYw,d=>d.sess);
+  const spT=sum(TY,d=>(d.g?d.g.sp:0)+(d.m?d.m.sp:0)), spL=sum(LYw,d=>lySpend(d));
+  const cvrT=sessT?ordT/sessT:null, cvrL=sessL?ordL/sessL:null;
+  const aovT=ordT?revT/ordT:null, aovL=ordL?revL/ordL:null;
+  const dayLbl = N===1 ? '1 day' : N+' days';
+  $('cumSub').textContent = 'First '+dayLbl+' of the season · 2026 vs the same '+dayLbl+' of 2025';
+  $('cumCards').append(
+    card('Revenue',fmt$(revT),revL?(revT-revL)/revL:null,'LY '+fmt$(revL)),
+    card('Net sales',fmt$(netT),netL?(netT-netL)/netL:null,'LY '+fmt$(netL)),
+    card('Orders',fmtN(ordT),ordL?(ordT-ordL)/ordL:null,'LY '+fmtN(ordL)),
+    card('Sessions',fmtN(sessT),sessL?(sessT-sessL)/sessL:null,'LY '+fmtN(sessL)),
+    card('Blended CVR',fmtP(cvrT),(cvrT!=null&&cvrL)?(cvrT-cvrL)/cvrL:null,'LY '+fmtP(cvrL)),
+    card('AOV',fmt$2(aovT),(aovT!=null&&aovL)?(aovT-aovL)/aovL:null,'LY '+fmt$2(aovL)),
+    card('Ad spend',fmt$(spT),spL?(spT-spL)/spL:null,'LY '+fmt$(spL)),
+    card('MER',spT?fmtX(revT/spT):'–',null,spL?'LY '+fmtX(revL/spL):'')
+  );
+}
 
 // ---- daily chart ----
 const metrics={
