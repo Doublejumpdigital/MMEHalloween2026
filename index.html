@@ -242,14 +242,15 @@ if (pre) $('stateChip').classList.add('pre');
 $('dialHead').textContent = pre ? 'The 2025 baseline is loaded. Live tracking starts 1 September.'
   : 'Season live · day ' + elapsed + ' of ' + seasonLen;
 $('dialSub').textContent = pre
-  ? 'Every chart below shows last season day-by-day, aligned to days-before-Halloween. From 2 September, each morning adds yesterday\u2019s trading beside the same point last year.'
-  : 'Each morning adds yesterday\u2019s trading beside the same day-to-Halloween last season.';
+  ? 'Every chart below shows last season day-by-day, aligned to days-before-Halloween. From 2 September, each morning adds yesterday’s trading beside the same point last year.'
+  : 'Each morning adds yesterday’s trading beside the same day-to-Halloween last season.';
 
 // ---- helpers over LY/TY ----
 const LY = D.ly, TY = D.ty;
 const lySpend = d => (d.g?d.g.sp:0) + (d.m?d.m.sp:0);
 const lySpendKnown = d => !!d.m; // full spend only where Meta known
 const cum = arr => { let s=0; return arr.map(v => (v==null? null : (s+=v))); };
+const backfillDone = C.lyMetaBackfillFrom === C.lyStart; // true once the Meta LY backfill has filled every day
 
 // ---- pulse ----
 function card(k,v,dl,ghost){
@@ -303,7 +304,7 @@ if(pre){
 const NS='http://www.w3.org/2000/svg';
 function el(n,at){const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;}
 function drawLines(svg, series, opts){
-  // series: [{vals:[...], color, dash, width, area}]
+  // series: [{vals:[...], color, dash, width, area, dot}]
   svg.innerHTML='';
   const W=900,H=+svg.viewBox.baseVal.height,P={l:56,r:14,t:14,b:30};
   const n = Math.max(...series.map(s=>s.vals.length));
@@ -327,15 +328,18 @@ function drawLines(svg, series, opts){
   const marks=[[0,'1 Sep'],[30,'1 Oct'],[n-1,'31 Oct']];
   marks.forEach(([i,l])=>{ if(i<n){const t=el('text',{x:x(i),y:H-8,'text-anchor':'middle',class:'axis'});t.textContent=l;svg.append(t);}});
   series.forEach(s=>{
-    let dLine='',started=false, firstX=null,lastX=null;
+    let dLine='',started=false, firstX=null,lastX=null,lastY=null;
     s.vals.forEach((v,i)=>{ if(v==null){return;} const px=x(i),py=y(v);
-      if(!started){dLine='M'+px+' '+py;started=true;firstX=px;}else{dLine+=' L'+px+' '+py;} lastX=px;});
+      if(!started){dLine='M'+px+' '+py;started=true;firstX=px;}else{dLine+=' L'+px+' '+py;} lastX=px;lastY=py;});
     if(!started)return;
     if(s.area){
       const a=dLine+' L'+lastX+' '+(H-P.b)+' L'+firstX+' '+(H-P.b)+' Z';
       svg.append(el('path',{d:a,fill:s.area,stroke:'none'}));
     }
     svg.append(el('path',{d:dLine,fill:'none',stroke:s.color,'stroke-width':s.width||2,'stroke-dasharray':s.dash||'', 'stroke-linejoin':'round','stroke-linecap':'round'}));
+    if(s.dot && lastX!=null){
+      svg.append(el('circle',{cx:lastX,cy:lastY,r:4.5,fill:s.color}));
+    }
   });
 }
 
@@ -344,18 +348,20 @@ const lyCumRev = cum(LY.map(d=>d.rev));
 const tyCumRev = cum(LY.map((_,i)=> i<TY.length ? TY[i].rev : null));
 drawLines($('paceRev'),[
   {vals:lyCumRev,color:'var(--ly)',dash:'5 5',width:2,area:'var(--ly-dim)'},
-  {vals:tyCumRev,color:'var(--ty)',width:3,area:'var(--ty-dim)'}
+  {vals:tyCumRev,color:'var(--ty)',width:3,area:'var(--ty-dim)',dot:true}
 ],{money:true});
 
 const lyCumSpend = cum(LY.map(d=> lySpend(d)));
 const tyCumSpend = cum(LY.map((_,i)=> i<TY.length ? (TY[i].g?TY[i].g.sp:0)+(TY[i].m?TY[i].m.sp:0) : null));
 drawLines($('paceSpend'),[
   {vals:lyCumSpend,color:'var(--ly)',dash:'5 5',width:2},
-  {vals:tyCumSpend,color:'var(--ty)',width:3}
+  {vals:tyCumSpend,color:'var(--ty)',width:3,dot:true}
 ],{money:true});
 $('spendNote').textContent = C.budgetTotal
   ? 'Budget line: $'+C.budgetTotal.toLocaleString()
-  : 'LY line is Google only before '+new Date(C.lyMetaBackfillFrom).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' until the Meta history backfill completes on the first automated refresh. '+C.budgetNote+'.';
+  : backfillDone
+    ? 'Full 2025 history loaded for both channels. '+C.budgetNote+'.'
+    : 'LY line is Google only before '+new Date(C.lyMetaBackfillFrom).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' until the Meta history backfill completes on the first automated refresh. '+C.budgetNote+'.';
 
 // ---- daily chart ----
 const metrics={
@@ -368,7 +374,7 @@ function renderDaily(m){
   const g=metrics[m];
   drawLines($('dailyChart'),[
     {vals:LY.map(g.get),color:'var(--ly)',dash:'4 5',width:1.8,area:'var(--ly-dim)'},
-    {vals:LY.map((_,i)=> i<TY.length ? g.get(TY[i]) : null),color:'var(--ty)',width:2.6}
+    {vals:LY.map((_,i)=> i<TY.length ? g.get(TY[i]) : null),color:'var(--ty)',width:2.6,dot:true}
   ],g.opts);
 }
 renderDaily('rev');
@@ -407,7 +413,7 @@ if (C.marginPct){
   }
   drawLines($('contribChart'),[
     {vals:lyContrib,color:'var(--ly)',dash:'4 5',width:1.8},
-    {vals:tyContrib,color:'var(--ty)',width:2.6}
+    {vals:tyContrib,color:'var(--ty)',width:2.6,dot:true}
   ],{money:true});
 }
 
@@ -440,7 +446,7 @@ if(pre){
   const win=LY.filter(d=>d.m);
   const shop=win.reduce((s,d)=>s+d.rev,0), plat=win.reduce((s,d)=>s+d.g.rev+d.m.rev,0);
   const pct=Math.min(100,plat/shop*100);
-  $('covText').textContent='Across 20–31 Oct 2025 (the window where both platforms are loaded), Google and Meta jointly claimed '+fmt$(plat)+' of '+fmt$(shop)+' actual Shopify revenue: '+pct.toFixed(0)+'% coverage. Watching this daily shows when either platform\u2019s attribution drifts from reality.';
+  $('covText').textContent='Across 20–31 Oct 2025 (the window where both platforms are loaded), Google and Meta jointly claimed '+fmt$(plat)+' of '+fmt$(shop)+' actual Shopify revenue: '+pct.toFixed(0)+'% coverage. Watching this daily shows when either platform’s attribution drifts from reality.';
   $('covFill').style.width=pct.toFixed(0)+'%';
 }else{
   $('chSub').textContent='Season to date, platform-reported';
@@ -461,7 +467,9 @@ D.notes.slice().reverse().forEach(n=>{
 });
 
 // ---- footer dynamic ----
-$('footBackfill').innerHTML='<b>Data status.</b> 2025 baseline loaded: Shopify and Google Ads complete for all 61 days; Meta loaded from 20 Oct 2025, remainder backfills automatically.';
+$('footBackfill').innerHTML = backfillDone
+  ? '<b>Data status.</b> 2025 baseline loaded in full: Shopify, Google Ads and Meta complete for all 61 days.'
+  : '<b>Data status.</b> 2025 baseline loaded: Shopify and Google Ads complete for all 61 days; Meta loaded from '+new Date(C.lyMetaBackfillFrom).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+', remainder backfills automatically.';
 $('footMeta').innerHTML='<b>Season window.</b> '+new Date(C.seasonStart).toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' – '+new Date(C.seasonEnd).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+', compared day-for-day against the same days-before-Halloween in 2025. Currency '+C.currency+'.';
 })();
 </script>
