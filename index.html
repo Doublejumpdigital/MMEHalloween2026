@@ -204,6 +204,7 @@ footer p{max-width:850px;margin-bottom:8px}
 
 <footer>
   <p><b>Definitions.</b> Revenue, orders, sessions, conversion rate and AOV come from Shopify and are the source of truth. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to actual revenue. MER (marketing efficiency ratio) is Shopify revenue divided by total ad spend across both platforms.</p>
+  <p><b>Sessions filter.</b> Sessions and conversion rate are filtered to Australian traffic only (both years, day-for-day), to exclude a pattern of non-genuine overseas sessions that was inflating traffic counts and crushing conversion rate — see the 1 Sept note. Revenue, orders, net sales and AOV are unfiltered and include all markets, since those reflect real transactions regardless of where the visitor session was recorded.</p>
   <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
   <p><b>Net sales & profit.</b> Net sales is Shopify revenue after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
 <p id="footBackfill"></p>
@@ -306,7 +307,7 @@ if(pre){
 const NS='http://www.w3.org/2000/svg';
 function el(n,at){const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;}
 function drawLines(svg, series, opts){
-  // series: [{vals:[...], color, dash, width, area, dot}]
+  // series: [{vals:[...], color, dash, width, area}]
   svg.innerHTML='';
   const W=900,H=+svg.viewBox.baseVal.height,P={l:56,r:14,t:14,b:30};
   const n = Math.max(...series.map(s=>s.vals.length));
@@ -375,7 +376,11 @@ if(!pre){
   const ordT=sum(TY,d=>d.ord), ordL=sum(LYw,d=>d.ord);
   const sessT=sum(TY,d=>d.sess), sessL=sum(LYw,d=>d.sess);
   const spT=sum(TY,d=>(d.g?d.g.sp:0)+(d.m?d.m.sp:0)), spL=sum(LYw,d=>lySpend(d));
-  const cvrT=sessT?ordT/sessT:null, cvrL=sessL?ordL/sessL:null;
+  // CVR is session-weighted average of each day's own rate, not orders/sessions — sessions are
+  // filtered to Australia (to exclude non-genuine overseas traffic) but orders are not, so the two
+  // populations don't divide cleanly against each other.
+  const cvrWeighted = arr => { const s=sum(arr,d=>d.sess); return s ? sum(arr,d=>d.sess*d.cvr)/s : null; };
+  const cvrT=cvrWeighted(TY), cvrL=cvrWeighted(LYw);
   const aovT=ordT?revT/ordT:null, aovL=ordL?revL/ordL:null;
   const dayLbl = N===1 ? '1 day' : N+' days';
   $('cumSub').textContent = 'First '+dayLbl+' of the season · 2026 vs the same '+dayLbl+' of 2025';
