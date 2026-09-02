@@ -225,6 +225,7 @@ footer p{max-width:850px;margin-bottom:8px}
   <p><b>Sessions filter.</b> Sessions and conversion rate are filtered to Australian traffic only (both years, day-for-day), to exclude a pattern of non-genuine overseas sessions that was inflating traffic counts and crushing conversion rate — see the 1 Sept note. Revenue, orders, net sales and AOV are unfiltered and include all markets, since those reflect real transactions regardless of where the visitor session was recorded.</p>
   <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
   <p><b>Net sales & profit.</b> Net sales is Shopify revenue after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
+  <p><b>Free shipping threshold.</b> Share of yesterday's orders at or above the $60 AUD free-shipping threshold, based on order total before shipping and after discounts.</p>
 <p id="footBackfill"></p>
   <p id="footMeta"></p>
 </footer>
@@ -319,6 +320,9 @@ if(pre){
     card('Ad spend',fmt$(sp),lsp?(sp-lsp)/lsp:null,lsp?'LY '+fmt$(lsp):'LY Meta pending'),
     card('MER',sp?fmtX(t.rev/sp):'–',null,lsp?'LY '+fmtX(l.rev/lsp):'')
   );
+  if(t.freeShip){
+    pc.append(card('Free shipping ($'+t.freeShip.thresh+'+)',fmtP(t.freeShip.pct),null,fmtN(t.freeShip.ord)+' of '+fmtN(t.ord)+' orders'));
+  }
 }
 
 // ---- SVG chart helpers ----
