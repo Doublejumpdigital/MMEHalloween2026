@@ -198,6 +198,24 @@ footer p{max-width:850px;margin-bottom:8px}
 </section>
 
 <section>
+  <div class="sechead"><h2>Organic search rankings</h2><span class="sub" id="seoSub"></span></div>
+  <div class="panel">
+    <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px">
+      <thead>
+        <tr style="text-align:left;color:var(--muted)">
+          <th style="padding:5px 0;font-weight:500">Keyword</th>
+          <th style="padding:5px 0;font-weight:500;text-align:right">Position</th>
+          <th style="padding:5px 0;font-weight:500;text-align:right">Trend</th>
+          <th style="padding:5px 0;font-weight:500;text-align:right">Vol/mo</th>
+        </tr>
+      </thead>
+      <tbody id="seoBody"></tbody>
+    </table>
+    <div class="note-inline">Google Australia, desktop + mobile blended. Tracked via Semrush; position 1 is the top organic result.</div>
+  </div>
+</section>
+
+<section>
   <div class="sechead"><h2>Daily notes</h2><span class="sub">Written each morning with the data refresh</span></div>
   <div id="notes"></div>
 </section>
@@ -504,6 +522,25 @@ if(pre){
     : new Date(TY[0].d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
   $('covText').textContent='Across '+rangeLbl+' (season to date), Google and Meta jointly claimed '+fmt$(plat)+' of '+fmt$(shop)+' actual Shopify revenue: '+pct.toFixed(0)+'% coverage. Watching this daily shows when either platform’s attribution drifts from reality.';
   $('covFill').style.width=pct.toFixed(0)+'%';
+}
+
+// ---- organic search rankings ----
+if (D.seo && D.seo.keywords && D.seo.keywords.length) {
+  $('seoSub').textContent = 'As of '+new Date(D.seo.asOf).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+' · via Semrush';
+  const seoBody = $('seoBody');
+  D.seo.keywords.forEach(k => {
+    const tr = document.createElement('tr');
+    const diff = (k.prevPos!=null) ? k.prevPos - k.pos : 0; // positive = moved up (improved)
+    let trendHtml = '<span style="color:var(--muted)">flat</span>';
+    if (diff > 0) trendHtml = '<span style="color:var(--good)">▲ '+diff+'</span>';
+    else if (diff < 0) trendHtml = '<span style="color:var(--bad)">▼ '+Math.abs(diff)+'</span>';
+    tr.innerHTML =
+      '<td style="padding:6px 0;border-bottom:1px dashed var(--line)">'+k.kw+'</td>'+
+      '<td style="padding:6px 0;border-bottom:1px dashed var(--line);text-align:right;font-weight:500">#'+k.pos+'</td>'+
+      '<td style="padding:6px 0;border-bottom:1px dashed var(--line);text-align:right">'+trendHtml+'</td>'+
+      '<td style="padding:6px 0;border-bottom:1px dashed var(--line);text-align:right;color:var(--muted)">'+k.vol.toLocaleString()+'</td>';
+    seoBody.appendChild(tr);
+  });
 }
 
 // ---- notes ----
