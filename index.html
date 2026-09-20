@@ -203,6 +203,7 @@ footer p{max-width:850px;margin-bottom:8px}
 
 <footer>
   <p><b>Definitions.</b> Revenue, orders, sessions, conversion rate and AOV come from Shopify and are the source of truth. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to actual revenue. MER (marketing efficiency ratio) is Shopify revenue divided by total ad spend across both platforms.</p>
+  <p><b>Organic search.</b> Impressions, clicks and average position come from Google Search Console; conversions and revenue come from Google Analytics 4's Organic Search channel grouping, which is built to exclude paid clicks. These use different tracking to the Shopify-sourced figures elsewhere on this page, so treat the organic card as directional rather than reconciled to the dollar.</p>
   <p><b>Sessions filter.</b> Sessions and conversion rate are filtered to Australian traffic only (both years, day-for-day), to exclude a pattern of non-genuine overseas sessions that was inflating traffic counts and crushing conversion rate — see the 1 Sept note. Revenue, orders, net sales and AOV are unfiltered and include all markets, since those reflect real transactions regardless of where the visitor session was recorded.</p>
   <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
   <p><b>Net sales & profit.</b> Net sales is Shopify revenue after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
@@ -488,6 +489,11 @@ if(pre){
   $('chSub').textContent='Season to date, platform-reported';
   const g={sp:0,rev:0,clk:0,conv:0}; TY.forEach(d=>{if(d.g){g.sp+=d.g.sp;g.rev+=d.g.rev;g.clk+=d.g.clk;g.conv+=d.g.conv;}});
   const m={sp:0,rev:0,clk:0,p:0}; TY.forEach(d=>{if(d.m){m.sp+=d.m.sp;m.rev+=d.m.rev;m.clk+=d.m.clk;m.p+=d.m.purch;}});
+  const o={imp:0,clk:0,conv:0,rev:0,posW:0,posImp:0};
+  TY.forEach(d=>{if(d.o){
+    o.imp+=d.o.imp||0; o.clk+=d.o.clk||0; o.conv+=d.o.conv||0; o.rev+=d.o.rev||0;
+    if(d.o.pos!=null&&d.o.imp){o.posW+=d.o.pos*d.o.imp; o.posImp+=d.o.imp;}
+  }});
   cc.append(
     chCard('Google Ads',[
       ['Spend',fmt$(g.sp)],['Attributed revenue',fmt$(g.rev)],['ROAS',g.sp?fmtX(g.rev/g.sp):'–'],
@@ -496,7 +502,12 @@ if(pre){
     chCard('Meta',[
       ['Spend',fmt$(m.sp)],['Attributed revenue',fmt$(m.rev)],['ROAS',m.sp?fmtX(m.rev/m.sp):'–'],
       ['Clicks',fmtN(m.clk)],['Click → purchase',m.clk?fmtP(m.p/m.clk):'–']
-    ])
+    ]),
+    chCard('Organic search',[
+      ['Impressions',fmtN(o.imp)],['Clicks',fmtN(o.clk)],
+      ['CTR',o.imp?fmtP(o.clk/o.imp):'–'],['Avg. position',o.posImp?(o.posW/o.posImp).toFixed(1):'–'],
+      ['Conversions',fmtN(o.conv)],['Revenue',fmt$(o.rev)]
+    ],'Source: Google Search Console (impressions, clicks, position) and the Organic Search channel in Google Analytics 4 (conversions, revenue) — not Shopify, so it isn’t on the same footing as the Shopify-sourced numbers elsewhere. Search Console lags 2–3 days, so the most recent day or two may be blank until it catches up.')
   );
   // attribution coverage over season to date (most recent 2–3 days are soft, see footer note)
   const shop=TY.reduce((s,d)=>s+d.rev,0);
