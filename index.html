@@ -149,8 +149,8 @@ footer p{max-width:850px;margin-bottom:8px}
 <section>
   <div class="sechead"><h2>Season pacing</h2><span class="sub">Cumulative, day-aligned to Halloween</span></div>
   <div class="panel">
-    <div class="eyebrow" style="margin-bottom:4px">Cumulative revenue (Shopify)</div>
-    <svg class="chart" id="paceRev" viewBox="0 0 900 260" role="img" aria-label="Cumulative revenue, this season versus last"></svg>
+    <div class="eyebrow" style="margin-bottom:4px">Cumulative net sales (Shopify)</div>
+    <svg class="chart" id="paceRev" viewBox="0 0 900 260" role="img" aria-label="Cumulative net sales, this season versus last"></svg>
   </div>
   <div class="panel">
     <div class="eyebrow" style="margin-bottom:4px">Cumulative ad spend (Google + Meta)</div>
@@ -175,7 +175,7 @@ footer p{max-width:850px;margin-bottom:8px}
   <div class="sechead">
     <h2>Daily trading</h2>
     <div class="tabs" role="tablist" id="dailyTabs">
-      <button role="tab" aria-selected="true" data-m="rev">Revenue</button>
+      <button role="tab" aria-selected="true" data-m="net">Net sales</button>
       <button role="tab" aria-selected="false" data-m="sess">Sessions</button>
       <button role="tab" aria-selected="false" data-m="cvr">Conv. rate</button>
       <button role="tab" aria-selected="false" data-m="aov">AOV</button>
@@ -202,12 +202,12 @@ footer p{max-width:850px;margin-bottom:8px}
 </section>
 
 <footer>
-  <p><b>Definitions.</b> Revenue, orders, sessions, conversion rate and AOV come from Shopify and are the source of truth. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to actual revenue. MER (marketing efficiency ratio) is Shopify revenue divided by total ad spend across both platforms.</p>
+  <p><b>Definitions.</b> Net sales, orders, sessions and conversion rate come from Shopify and are the source of truth. AOV is average order value on the gross order total, before discounts and returns are taken off. Google and Meta figures are platform-reported: useful for steering each channel, but both platforms claim credit for some of the same orders, so they don't sum to net sales. MER (marketing efficiency ratio) is Shopify net sales divided by total ad spend across both platforms.</p>
   <p><b>Organic search.</b> Sessions, conversions and revenue come from Google Analytics 4's Organic Search channel grouping, which is built to exclude paid clicks. This uses different tracking to the Shopify-sourced figures elsewhere on this page, so treat the organic card as directional rather than reconciled to the dollar.</p>
   <p><b>Channels vs last year.</b> The percentages next to each channel figure compare the season-to-date total against the same number of days last year (the same alignment used everywhere else on this page). Google, Meta and organic search all use platform or GA4 attribution, which differs from Shopify's, so these comparisons are best read as trend, not as reconciled dollars.</p>
-  <p><b>Sessions filter.</b> Sessions and conversion rate are filtered to Australian traffic only (both years, day-for-day), to exclude a pattern of non-genuine overseas sessions that was inflating traffic counts and crushing conversion rate — see the 1 Sept note. Revenue, orders, net sales and AOV are unfiltered and include all markets, since those reflect real transactions regardless of where the visitor session was recorded.</p>
+  <p><b>Sessions filter.</b> Sessions and conversion rate are filtered to Australian traffic only (both years, day-for-day), to exclude a pattern of non-genuine overseas sessions that was inflating traffic counts and crushing conversion rate — see the 1 Sept note. Orders, net sales and AOV are unfiltered and include all markets, since those reflect real transactions regardless of where the visitor session was recorded.</p>
   <p><b>Attribution lag.</b> Platform-reported conversions for the most recent 2–3 days always restate upward as Google and Meta finish attributing. A soft platform ROAS inside that window is usually the lag, not the media.</p>
-  <p><b>Net sales & profit.</b> Net sales is Shopify revenue after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
+  <p><b>Net sales & profit.</b> Net sales is Shopify sales after discounts and returns. The profit lens, when shown, is an estimate built on the client's blended gross margin; Shopify holds no per-item cost data for this store, so true gross profit isn't reportable until costs are entered (and would apply this season onward only).</p>
   <p><b>Free shipping threshold.</b> Share of yesterday's orders at or above the $60 AUD free-shipping threshold, based on order total before shipping and after discounts.</p>
 <p id="footBackfill"></p>
   <p id="footMeta"></p>
@@ -275,18 +275,17 @@ if(pre){
   $('pulseSub').textContent='1 Sep – 31 Oct 2025 · the baseline this season is measured against';
   const totRev=LY.reduce((s,d)=>s+d.rev,0), totOrd=LY.reduce((s,d)=>s+d.ord,0);
   const totSess=LY.reduce((s,d)=>s+d.sess,0);
-  const peak=LY.reduce((a,b)=>b.rev>a.rev?b:a);
+  const peak=LY.reduce((a,b)=>b.net>a.net?b:a);
   const gSp=LY.reduce((s,d)=>s+d.g.sp,0);
   const totNet=LY.reduce((s,d)=>s+(d.net||0),0);
   pc.append(
-    card('Season revenue',fmt$(totRev)),
     card('Net sales',fmt$(totNet),null,'after discounts & returns'),
     card('Orders',fmtN(totOrd)),
     card('Sessions',fmtN(totSess)),
     card('Blended CVR',fmtP(totOrd/totSess)),
     card('AOV',fmt$2(totRev/totOrd)),
     card('Google spend',fmt$(gSp),null,'Meta history backfilling'),
-    card('Peak day',fmt$(peak.rev),null,new Date(peak.d).toLocaleDateString('en-AU',{day:'numeric',month:'short'}))
+    card('Peak day',fmt$(peak.net),null,new Date(peak.d).toLocaleDateString('en-AU',{day:'numeric',month:'short'}))
   );
 }else{
   const t=TY[TY.length-1], l=LY[TY.length-1];
@@ -294,14 +293,13 @@ if(pre){
   $('pulseSub').textContent='vs '+new Date(l.d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+' (same day-to-Halloween)';
   const sp = (t.g?t.g.sp:0)+(t.m?t.m.sp:0), lsp = lySpendKnown(l)?lySpend(l):null;
   pc.append(
-    card('Revenue',fmt$(t.rev),(t.rev-l.rev)/l.rev,'LY '+fmt$(l.rev)),
     card('Net sales',fmt$(t.net),(l.net?(t.net-l.net)/l.net:null),'LY '+fmt$(l.net)),
     card('Orders',fmtN(t.ord),(t.ord-l.ord)/l.ord,'LY '+fmtN(l.ord)),
     card('Sessions',fmtN(t.sess),(t.sess-l.sess)/l.sess,'LY '+fmtN(l.sess)),
     card('Conv. rate',fmtP(t.cvr),(t.cvr-l.cvr)/l.cvr,'LY '+fmtP(l.cvr)),
     card('AOV',fmt$2(t.aov),(t.aov-l.aov)/l.aov,'LY '+fmt$2(l.aov)),
     card('Ad spend',fmt$(sp),lsp?(sp-lsp)/lsp:null,lsp?'LY '+fmt$(lsp):'LY Meta pending'),
-    card('MER',sp?fmtX(t.rev/sp):'–',null,lsp?'LY '+fmtX(l.rev/lsp):'')
+    card('MER',sp?fmtX(t.net/sp):'–',null,lsp?'LY '+fmtX(l.net/lsp):'')
   );
   if(t.freeShip){
     pc.append(card('Free shipping ($'+t.freeShip.thresh+'+)',fmtP(t.freeShip.pct),null,fmtN(t.freeShip.ord)+' of '+fmtN(t.ord)+' orders'));
@@ -352,11 +350,11 @@ function drawLines(svg, series, opts){
 }
 
 // ---- pacing charts ----
-const lyCumRev = cum(LY.map(d=>d.rev));
-const tyCumRev = cum(LY.map((_,i)=> i<TY.length ? TY[i].rev : null));
+const lyCumNet = cum(LY.map(d=>d.net));
+const tyCumNet = cum(LY.map((_,i)=> i<TY.length ? TY[i].net : null));
 drawLines($('paceRev'),[
-  {vals:lyCumRev,color:'var(--ly)',dash:'5 5',width:2,area:'var(--ly-dim)'},
-  {vals:tyCumRev,color:'var(--ty)',width:3,area:'var(--ty-dim)',dot:true}
+  {vals:lyCumNet,color:'var(--ly)',dash:'5 5',width:2,area:'var(--ly-dim)'},
+  {vals:tyCumNet,color:'var(--ty)',width:3,area:'var(--ty-dim)',dot:true}
 ],{money:true});
 
 const lyCumSpend = cum(LY.map(d=> lySpend(d)));
@@ -377,7 +375,7 @@ if(!pre){
   const LYw = LY.slice(0,N);
   const sum = (arr,f) => arr.reduce((s,d)=>s+f(d),0);
   const revT=sum(TY,d=>d.rev), revL=sum(LYw,d=>d.rev);
-  const netT=sum(TY,d=>d.net), netL=sum(LYw,d=>d.net||0);
+  const netT=sum(TY,d=>d.net), netL=sum(LYw,d=>d.net);
   const ordT=sum(TY,d=>d.ord), ordL=sum(LYw,d=>d.ord);
   const sessT=sum(TY,d=>d.sess), sessL=sum(LYw,d=>d.sess);
   const spT=sum(TY,d=>(d.g?d.g.sp:0)+(d.m?d.m.sp:0)), spL=sum(LYw,d=>lySpend(d));
@@ -390,20 +388,19 @@ if(!pre){
   const dayLbl = N===1 ? '1 day' : N+' days';
   $('cumSub').textContent = 'First '+dayLbl+' of the season · 2026 vs the same '+dayLbl+' of 2025';
   $('cumCards').append(
-    card('Revenue',fmt$(revT),revL?(revT-revL)/revL:null,'LY '+fmt$(revL)),
     card('Net sales',fmt$(netT),netL?(netT-netL)/netL:null,'LY '+fmt$(netL)),
     card('Orders',fmtN(ordT),ordL?(ordT-ordL)/ordL:null,'LY '+fmtN(ordL)),
     card('Sessions',fmtN(sessT),sessL?(sessT-sessL)/sessL:null,'LY '+fmtN(sessL)),
     card('Blended CVR',fmtP(cvrT),(cvrT!=null&&cvrL)?(cvrT-cvrL)/cvrL:null,'LY '+fmtP(cvrL)),
     card('AOV',fmt$2(aovT),(aovT!=null&&aovL)?(aovT-aovL)/aovL:null,'LY '+fmt$2(aovL)),
     card('Ad spend',fmt$(spT),spL?(spT-spL)/spL:null,'LY '+fmt$(spL)),
-    card('MER',spT?fmtX(revT/spT):'–',null,spL?'LY '+fmtX(revL/spL):'')
+    card('MER',spT?fmtX(netT/spT):'–',null,spL?'LY '+fmtX(netL/spL):'')
   );
 }
 
 // ---- daily chart ----
 const metrics={
-  rev:{get:d=>d.rev,opts:{money:true}},
+  net:{get:d=>d.net,opts:{money:true}},
   sess:{get:d=>d.sess,opts:{plain:true}},
   cvr:{get:d=>d.cvr,opts:{pct:true}},
   aov:{get:d=>d.aov,opts:{money:true}}
@@ -415,7 +412,7 @@ function renderDaily(m){
     {vals:LY.map((_,i)=> i<TY.length ? g.get(TY[i]) : null),color:'var(--ty)',width:2.6,dot:true}
   ],g.opts);
 }
-renderDaily('rev');
+renderDaily('net');
 $('dailyTabs').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   [...$('dailyTabs').children].forEach(x=>x.setAttribute('aria-selected',x===b));
